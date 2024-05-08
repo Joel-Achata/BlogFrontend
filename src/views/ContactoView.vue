@@ -30,7 +30,7 @@
             <div class="col-sm-4 text-center mb-3">
                 <i class="fa fa-2x fa-phone-alt mb-3 text-primary"></i>
                 <h4 class="font-weight-bold">Telefono</h4>
-                <p>+012 345 6789</p>
+                <p>+59172735066</p>
             </div>
             <div class="col-sm-4 text-center mb-3">
                 <i class="far fa-2x fa-envelope mb-3 text-primary"></i>
@@ -49,6 +49,12 @@
                 <div class="control-group">
                     <input type="email" v-model="correo" class="form-control" id="email" placeholder="Ingresa tu correo"
                         required="required" data-validation-required-message="Please enter your email" />
+                    <p class="help-block text-danger"></p>
+                </div>
+                <div class="control-group">
+                    <input type="text" v-model="telefono" class="form-control" id="telefono"
+                        placeholder="Ingresa tu numero" required="required"
+                        data-validation-required-message="Please enter your number" />
                     <p class="help-block text-danger"></p>
                 </div>
                 <div class="control-group">
@@ -82,8 +88,9 @@ export default {
         const correo = ref('');
         const asunto = ref('');
         const mensaje = ref('');
+        const telefono = ref('');
         const enviarMensaje = async () => {
-            if (nombre.value == '' || correo.value == '' || asunto.value == '' || mensaje.value == '') {
+            if (nombre.value == '' || correo.value == '' || asunto.value == '' || mensaje.value == '' || telefono.value == '') {
                 alert('Todos los campos son requeridos!');
                 return;
             }
@@ -92,6 +99,7 @@ export default {
                 const { data } = await axios.post(baseUrl + '/contactos', {
                     nombre: nombre.value,
                     correo: correo.value,
+                    telefono: telefono.value,
                     asunto: asunto.value,
                     mensaje: mensaje.value,
                 }, {
@@ -106,11 +114,18 @@ export default {
                     enviado.value = false;
                     nombre.value = '';
                     correo.value = '';
+                    telefono.value = '';
                     asunto.value = '';
                     mensaje.value = '';
                 }, 2000);
             } catch (error) {
                 console.log(error)
+                console.log(error.response.data.errors)
+                let errores = '';
+                for (let item in error.response.data.errors) {
+                    errores += error.response.data.errors[item] + '\n';
+                }
+                alert(errores);
             }
 
         }
@@ -120,6 +135,7 @@ export default {
             correo,
             asunto,
             mensaje,
+            telefono,
             enviarMensaje
 
         }
